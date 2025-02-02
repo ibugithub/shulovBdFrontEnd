@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Webcam from 'react-webcam';
+import Image from 'next/image';
 
 interface ClientFormData {
   name: string;
@@ -38,6 +39,8 @@ export default function ClientForm() {
       fetch(imageSrc)
         .then(res => res.blob())
         .then(blob => {
+          
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const file = new File([blob], 'captured-image.jpg', { type: 'image/jpeg' });
           // You can store this file in your form state if needed
         });
@@ -51,16 +54,18 @@ export default function ClientForm() {
           <h2 className="text-3xl font-extrabold text-gray-900 text-center">Client Registration</h2>
           <p className="mt-2 text-sm text-gray-500 text-center">Please fill in the details below</p>
         </div>
-  
+
         <div className="md:grid md:grid-cols-12 md:gap-10">
           {/* Image Section */}
           <div className="md:col-span-5 mb-8 md:mb-0">
             <div className="space-y-6">
+
               <div className="group relative aspect-square w-full bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300 hover:border-indigo-500 transition-colors">
                 {imagePreview ? (
-                  <img
+                  <Image
                     src={imagePreview}
                     alt="Preview"
+                    layout="fill"
                     className="w-full h-full rounded-2xl object-cover shadow-md"
                   />
                 ) : (
@@ -70,7 +75,7 @@ export default function ClientForm() {
                       stroke="currentColor"
                       fill="none"
                       viewBox="0 0 48 48"
-                    >#
+                    >
                       <path
                         d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                         strokeWidth="2"
@@ -94,7 +99,7 @@ export default function ClientForm() {
                   </div>
                 )}
               </div>
-  
+
               <div className="space-y-3">
                 <button
                   type="button"
@@ -122,7 +127,7 @@ export default function ClientForm() {
                   </svg>
                   {showWebcam ? 'Close Camera' : 'Take photo'}
                 </button>
-  
+
                 {showWebcam && (
                   <div className="space-y-4">
                     <Webcam
@@ -143,7 +148,7 @@ export default function ClientForm() {
               </div>
             </div>
           </div>
-  
+
           {/* Form Fields */}
           <div className="md:col-span-7">
             <div className="space-y-6">
@@ -172,7 +177,7 @@ export default function ClientForm() {
                   <p className="mt-1.5 text-sm text-red-600">{errors.name.message}</p>
                 )}
               </div>
-  
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Contact Number</label>
@@ -199,7 +204,7 @@ export default function ClientForm() {
                     <p className="mt-1.5 text-sm text-red-600">{errors.contact.message}</p>
                   )}
                 </div>
-  
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Address</label>
                   <div className="relative">
@@ -226,7 +231,7 @@ export default function ClientForm() {
                   )}
                 </div>
               </div>
-  
+
               <div className="pt-4">
                 <button
                   type="submit"
