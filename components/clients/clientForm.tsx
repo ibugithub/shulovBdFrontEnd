@@ -4,6 +4,10 @@ import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Webcam from 'react-webcam';
 import Image from 'next/image';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface ClientFormData {
   name: string;
@@ -13,14 +17,25 @@ interface ClientFormData {
 }
 
 export default function ClientForm() {
+  const Router = useRouter();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const { register, handleSubmit, formState: { errors } } = useForm<ClientFormData>();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showWebcam, setShowWebcam] = useState(false);
   const webcamRef = useRef<Webcam>(null);
 
-  const onSubmit = (data: ClientFormData) => {
-    // Handle form submission
+  const onSubmit = async (data: ClientFormData) => {
     console.log(data);
+    try {
+      const response = await axios.post(`${backendUrl}api/clients/register/`, data);
+      if (response.status === 201) {
+        toast.success('Client registered successfully');
+        Router.push('/clients');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +54,7 @@ export default function ClientForm() {
       fetch(imageSrc)
         .then(res => res.blob())
         .then(blob => {
-          
+
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const file = new File([blob], 'captured-image.jpg', { type: 'image/jpeg' });
           // You can store this file in your form state if needed
@@ -48,9 +63,30 @@ export default function ClientForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8 pt-[120px]">
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12">
         <div className="mb-10">
+          <div className="flex items-center justify-between mb-6">
+            <Link
+              href="/clients"
+              className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors"
+            >
+              <svg
+                className="w-5 h-5 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              Back to Clients
+            </Link>
+          </div>
           <h2 className="text-3xl font-extrabold text-gray-900 text-center">Client Registration</h2>
           <p className="mt-2 text-sm text-gray-500 text-center">Please fill in the details below</p>
         </div>
@@ -158,7 +194,7 @@ export default function ClientForm() {
                   <input
                     {...register('name', { required: 'Name is required' })}
                     type="text"
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400 transition-all"
+                    className="w-full px-4 py-3 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400 transition-all text-gray-900"
                     placeholder="John Doe"
                   />
                   {errors.name && (
@@ -185,7 +221,7 @@ export default function ClientForm() {
                     <input
                       {...register('contact', { required: 'Contact is required' })}
                       type="tel"
-                      className="w-full px-4 py-3 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400 transition-all"
+                      className="w-full px-4 py-3 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400 transition-all text-gray-900"
                       placeholder="+1 (555) 000-0000"
                     />
                     {errors.contact && (
@@ -211,7 +247,7 @@ export default function ClientForm() {
                     <textarea
                       {...register('address', { required: 'Address is required' })}
                       rows={3}
-                      className="w-full px-4 py-3 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400 transition-all"
+                      className="w-full px-4 py-3 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400 transition-all text-gray-900"
                       placeholder="Enter full address"
                     />
                     {errors.address && (

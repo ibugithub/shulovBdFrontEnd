@@ -1,4 +1,4 @@
-import ClientForm from "../clientForm"
+import ClientForm from "../clients/clientForm"
 
 export const Home = () => {
   return (
